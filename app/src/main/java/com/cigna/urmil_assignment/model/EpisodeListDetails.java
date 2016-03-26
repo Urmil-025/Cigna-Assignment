@@ -3,11 +3,11 @@ package com.cigna.urmil_assignment.model;
 
 public class EpisodeListDetails {
 
-	String Title = null;
-	String Released = null;
-	String Episode = null;
-	String imdbRating = null;
-	String imdbID = null;
+	String Title ;
+	String Released ;
+	String Episode ;
+	String imdbRating ;
+	String imdbID ;
 
 	public String getTitle() {
 		return Title;

@@ -14,73 +14,71 @@ import com.cigna.urmil_assignment.background.CignaAsyncTask;
 import com.cigna.urmil_assignment.model.EpisodeDetails;
 import com.google.gson.Gson;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public class EpisodeDetailActivity extends AppCompatActivity implements AsyncResponse {
 
-    private TextView noDataAvailable;
-    private CignaAsyncTask asyncHttpPost;
     private Gson gson;
-    private Toolbar toolbar;
-    private TextView tv_year_value,tv_rated_value,tv_released_value,tv_season_value,tv_episode_value,tv_runtime_value;
-    private String imdbID;
     private static String EPISODE_DETAILS_URL = "http://www.omdbapi.com/?i=<imdbID>&plot=short&r=json";
-    private EpisodeDetails episodeDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_episodedetails);
 
-        if(getIntent().getExtras()!=null){
-            imdbID = getIntent().getStringExtra("imdbID");
-        }
-
-        tv_year_value = (TextView)this.findViewById(R.id.tv_year_value);
-        tv_rated_value = (TextView)this.findViewById(R.id.tv_rated_value);
-        tv_released_value = (TextView)this.findViewById(R.id.tv_released_value);
-        tv_season_value = (TextView)this.findViewById(R.id.tv_season_value);
-        tv_episode_value = (TextView)this.findViewById(R.id.tv_episode_value);
-        tv_runtime_value = (TextView)this.findViewById(R.id.tv_runtime_value);
-
-
+        //Initialize Gson
         gson = new Gson();
-        fetchEpisodesDetails();
+
+        // Get imdbID from the previous List activity
+        if (getIntent().getExtras() != null) {
+            String imdbID = getIntent().getStringExtra("imdbID");
+            fetchEpisodesDetails(imdbID);
+        }
     }
 
-    private void fetchEpisodesDetails() {
+    /**
+     * Fetch Episode details
+     *
+     * @param strImdbID
+     */
+    private void fetchEpisodesDetails(String strImdbID) {
 
-        asyncHttpPost = new CignaAsyncTask(EpisodeDetailActivity.this);
-        asyncHttpPost.delegate =EpisodeDetailActivity.this;
-        String detailsURL = EPISODE_DETAILS_URL.replaceAll("<imdbID>",imdbID);
+        CignaAsyncTask asyncHttpPost = new CignaAsyncTask(EpisodeDetailActivity.this);
+        asyncHttpPost.delegate = EpisodeDetailActivity.this;
+        String detailsURL = EPISODE_DETAILS_URL.replaceAll("<imdbID>", strImdbID);
         asyncHttpPost.execute(detailsURL);
     }
 
     @Override
     public void processFinish(String output) {
-
         extractEpisodeDetailsFromResponse(output);
     }
 
-    public void extractEpisodeDetailsFromResponse(String output){
 
-        try {
-            JSONObject obj = new JSONObject(output);
-            episodeDetails = gson.fromJson(output,EpisodeDetails.class);
+    public void extractEpisodeDetailsFromResponse(String output) {
 
-            setupToolBar();
+        EpisodeDetails episodeDetails = gson.fromJson(output, EpisodeDetails.class);
+        //Initialize Toolbar and set title using the EpisodeDetails
+        setupToolBar(episodeDetails);
+        //Update UI with the data
+        updateUI(episodeDetails);
 
-            tv_year_value.setText(episodeDetails.getYear());
-            tv_rated_value.setText(episodeDetails.getRated());
-            tv_released_value.setText(episodeDetails.getReleased());
-            tv_episode_value.setText(episodeDetails.getEpisode());
-            tv_season_value.setText(episodeDetails.getSeason());
-            tv_runtime_value.setText(episodeDetails.getRuntime());
+    }
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    public void updateUI(EpisodeDetails episodeDetails){
+
+        //Initialize all UI elements
+        TextView tv_year_value = (TextView) this.findViewById(R.id.tv_year_value);
+        TextView tv_rated_value = (TextView) this.findViewById(R.id.tv_rated_value);
+        TextView tv_released_value = (TextView) this.findViewById(R.id.tv_released_value);
+        TextView tv_season_value = (TextView) this.findViewById(R.id.tv_season_value);
+        TextView tv_episode_value = (TextView) this.findViewById(R.id.tv_episode_value);
+        TextView tv_runtime_value = (TextView) this.findViewById(R.id.tv_runtime_value);
+
+        tv_year_value.setText(episodeDetails.getYear());
+        tv_rated_value.setText(episodeDetails.getRated());
+        tv_released_value.setText(episodeDetails.getReleased());
+        tv_episode_value.setText(episodeDetails.getEpisode());
+        tv_season_value.setText(episodeDetails.getSeason());
+        tv_runtime_value.setText(episodeDetails.getRuntime());
     }
 
     @Override
@@ -100,20 +98,19 @@ public class EpisodeDetailActivity extends AppCompatActivity implements AsyncRes
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
-        }else if(id==android.R.id.home){
+        } else if (id == android.R.id.home) {
             finish();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void setupToolBar() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+    private void setupToolBar(EpisodeDetails episodeDetails) {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         final ActionBar ab = getSupportActionBar();
         ab.setTitle(episodeDetails.getTitle());
-        //ab.setDisplayHomeAsUpEnabled(true);
     }
 
 

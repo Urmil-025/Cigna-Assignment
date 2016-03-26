@@ -20,7 +20,7 @@ public class CignaAsyncTask extends AsyncTask<String, String, String> {
     protected void onPreExecute() {
         super.onPreExecute();
 
-        pDialog = ProgressDialog.show(mContext, "Episodes", "Please wait...");
+        pDialog = ProgressDialog.show(mContext, "Fetching information", "Please wait...");
     }
 
     @Override

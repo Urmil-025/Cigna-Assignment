@@ -3,13 +3,13 @@ package com.cigna.urmil_assignment.model;
 
 public class EpisodeDetails {
 
-	String Year = null;
-	String Rated = null;
-	String Released = null;
-	String Season = null;
-	String Episode = null;
-	String Runtime = null;
-	String Title = null;
+	String Year ;
+	String Rated ;
+	String Released ;
+	String Season ;
+	String Episode ;
+	String Runtime ;
+	String Title ;
 
 	public String getYear() {
 		return Year;

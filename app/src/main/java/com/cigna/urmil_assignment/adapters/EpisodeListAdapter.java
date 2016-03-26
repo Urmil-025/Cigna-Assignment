@@ -3,7 +3,6 @@ package com.cigna.urmil_assignment.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -111,13 +110,10 @@ public class EpisodeListAdapter extends BaseAdapter implements View.OnClickListe
     public void onClick(View view) {
         EpisodeListDetails episodeListDetails = (EpisodeListDetails) view.getTag();
 
-        Log.v("Adapter",episodeListDetails.getImdbID());
-
         Intent i = new Intent(mContext, EpisodeDetailActivity.class);
         // sending data to new activity
         i.putExtra("imdbID", episodeListDetails.getImdbID());
         mContext.startActivity(i);
-
 
     }
 }

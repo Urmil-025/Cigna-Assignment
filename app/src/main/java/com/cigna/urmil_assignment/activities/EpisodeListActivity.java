@@ -7,7 +7,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.cigna.urmil_assignment.R;
 import com.cigna.urmil_assignment.adapters.EpisodeListAdapter;
@@ -22,14 +21,9 @@ import org.json.JSONObject;
 
 public class EpisodeListActivity extends AppCompatActivity implements AsyncResponse {
 
-    private TextView noDataAvailable;
-    private CignaAsyncTask asyncHttpPost;
     private Gson gson;
-    private Toolbar toolbar;
     private ListView episodelist;
-    private String activityName;
     private static String EPISODE_URL = "http://www.omdbapi.com/?t=Game%20of%20Thrones&Season=1";
-    private static String EPISODE_DETAILS_URL = "http://www.omdbapi.com/?i=%1s&plot=short&r=json";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,41 +36,27 @@ public class EpisodeListActivity extends AppCompatActivity implements AsyncRespo
     }
 
     private void fetchEpisodesList() {
-
-        asyncHttpPost = new CignaAsyncTask(EpisodeListActivity.this);
+        CignaAsyncTask asyncHttpPost = new CignaAsyncTask(EpisodeListActivity.this);
         asyncHttpPost.delegate =EpisodeListActivity.this;
-        asyncHttpPost.execute(EPISODE_URL); //"http://www.omdbapi.com/?t=Game%20of%20Thrones&Season=1"
+        asyncHttpPost.execute(EPISODE_URL);
     }
 
     @Override
     public void processFinish(String output) {
-
         extractEpisodesFromResponse(output);
     }
 
     public void extractEpisodesFromResponse(String output){
-        EpisodeListDetails[] episodeListDetails;
-
         try {
             JSONObject obj = new JSONObject(output);
-            activityName = obj.getString("Title");
-            setupToolBar();
+            String activityName = obj.getString("Title");
+            setupToolBar(activityName);
 
             JSONArray m_jArry = obj.getJSONArray("Episodes");
-
-            episodeListDetails = gson.fromJson(m_jArry.toString(),EpisodeListDetails[].class);
-
+            EpisodeListDetails[] episodeListDetails = gson.fromJson(m_jArry.toString(), EpisodeListDetails[].class);
             EpisodeListAdapter episodeListAdapter = new EpisodeListAdapter(this,episodeListDetails);
-
             // assign the list adapter
             episodelist.setAdapter(episodeListAdapter);
-
-//            for (int i = 0; i < m_jArry.length(); i++) {
-//                JSONObject jo_inside = m_jArry.getJSONObject(i);
-//                episodeListDetails.setTitle(jo_inside.getString("Title"));
-//                episodeListDetails.setImdbID(jo_inside.getString("imdbID"));
-//                listValues.add(episodeListDetails.getTitle());
-//            }
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -105,8 +85,8 @@ public class EpisodeListActivity extends AppCompatActivity implements AsyncRespo
         return super.onOptionsItemSelected(item);
     }
 
-    private void setupToolBar() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+    private void setupToolBar(String activityName) {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         final ActionBar ab = getSupportActionBar();
