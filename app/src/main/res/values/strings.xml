@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Urmil_Assignment</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="no_data">We donot have anything to show you :(</string>
+
+    <string name="year">Year</string>
+    <string name="rated">Rated</string>
+    <string name="released">Released</string>
+    <string name="season">Season</string>
+    <string name="episode">Episode</string>
+    <string name="runtime">Runtime</string>
+
+
+</resources>
